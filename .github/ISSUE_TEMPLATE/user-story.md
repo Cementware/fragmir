@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**given {initial state} describe the action**
+**given {initial state}**
 Short description of preconditions
 
 **when {action} is performed**
