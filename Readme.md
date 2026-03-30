@@ -1,3 +1,3 @@
 # Fragmir.bz
 
-- baller
+Social interaction platform based on events and messaging
