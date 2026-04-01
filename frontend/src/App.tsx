@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react'
 const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
-  const [msg, setMsg] = useState("Connecting to backend...")
-  const [status, setStatus] = useState("loading")
+  const [msg, setMsg] = useState(`Connecting to backend at ${API_URL}...`);
+  const [status, setStatus] = useState("loading");
+  console.log(`Backend at ${API_URL}`);
 
   useEffect(() => {
     // We fetch from localhost:3000 because the browser is outside the Docker network
