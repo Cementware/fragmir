@@ -1,7 +1,10 @@
-import express from 'express';
-const app = express();
+const express = require('express');
+const cors = require('cors');
 
-app.get('/api/status', (req, res) => {
+const app = express();
+app.use(cors());
+
+app.get('/api/status', (_, res) => {
   res.json({ message: "Backend is running and connected!" });
 });
 
