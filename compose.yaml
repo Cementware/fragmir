@@ -34,8 +34,6 @@ services:
       - /usr/src/app/node_modules
     environment:
       - VITE_API_URL=http://localhost:3000
-    stdin_open: true
-    tty: true
     depends_on:
       - backend
 
