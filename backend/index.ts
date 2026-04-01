@@ -6,7 +6,6 @@ const app = express();
 app.use(cors());
 
 console.log('Starting...');
-db.init();
 app.get('/api/status', (_, res) => {
   res.json({ message: "Backend is running and connected!" });
 });

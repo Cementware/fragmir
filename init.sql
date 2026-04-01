@@ -1,0 +1,129 @@
+-- Remove the old tables
+DROP DATABASE IF EXISTS fragmir;
+
+CREATE DATABASE fragmir
+CHARACTER SET utf8mb4 
+COLLATE utf8mb4_unicode_ci;
+
+USE fragmir;
+
+CREATE TABLE user(
+  ID CHAR(32) PRIMARY KEY,
+  username VARCHAR(64) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(128) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE question(
+  ID CHAR(32) PRIMARY KEY,
+  SENDER_ID CHAR(32) NOT NULL,
+  RECIPIENT_ID CHAR(32) NOT NULL,
+  -- wether user who has sent question wishes to remain anonymous
+  private BIT DEFAULT 0 NOT NULL,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+  CONSTRAINT fk_sender_id
+    FOREIGN KEY(sender_ID)
+    REFERENCES user(ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT fk_recipient_id
+    FOREIGN KEY(RECIPIENT_ID)
+    REFERENCES user(ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE location(
+  ID CHAR(32) PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  location Point NOT NULL,
+  -- performance things
+  SPATIAL INDEX(location)
+) ENGINE=InnoDB;
+
+CREATE TABLE event(
+  ID CHAR(32) PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  description TEXT NOT NULL,
+  CREATOR_ID CHAR(32) NOT NULL,
+  time TIMESTAMP NOT NULL,
+  -- wether the user who created the event should be shown
+  private BIT DEFAULT 1 NOT NULL,
+  LOCATION_ID CHAR(32) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  
+  CONSTRAINT fk_creator_id
+    FOREIGN KEY(CREATOR_ID)
+    REFERENCES user(ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+
+  CONSTRAINT fk_location_id
+    FOREIGN KEY(LOCATION_ID)
+    REFERENCES location(ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE participant(
+  EVENT_ID CHAR(32) NOT NULL,
+  USER_ID CHAR(32) NOT NULL,
+  PRIMARY KEY(EVENT_ID, USER_ID),
+  CONSTRAINT fk_event_id
+    FOREIGN KEY(EVENT_ID)
+    REFERENCES event(ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  
+  CONSTRAINT fk_user_id
+    FOREIGN KEY(USER_ID)
+    REFERENCES user(ID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- Triggers
+DELIMITER //
+
+CREATE TRIGGER before_insert_user
+BEFORE INSERT ON user
+FOR EACH ROW
+BEGIN
+  IF NEW.ID IS NULL OR NEW.ID = '' THEN
+    SET NEW.ID = MD5(CONCAT(NEW.username, NOW()));
+  END IF;
+END//
+
+CREATE TRIGGER before_insert_question
+BEFORE INSERT ON question
+FOR EACH ROW
+BEGIN
+  IF NEW.ID IS NULL OR NEW.ID = '' THEN
+    SET NEW.ID = MD5(concat(NEW.SENDER_ID, NEW.RECIPIENT_ID, NOW()));
+  END IF;
+END//
+
+CREATE TRIGGER before_insert_location
+BEFORE INSERT ON location
+FOR EACH ROW
+BEGIN
+  IF NEW.ID IS NULL OR NEW.ID = '' THEN
+    SET NEW.ID = MD5(concat(NEW.name, NEW.location));
+  END IF;
+END//
+
+CREATE TRIGGER before_insert_event
+BEFORE INSERT ON event
+FOR EACH ROW
+BEGIN
+  IF NEW.ID IS NULL OR NEW.ID = '' THEN
+    SET NEW.ID = MD5(concat(NEW.name, NEW.LOCATION_ID, NOW()));
+  END IF;
+END//
+
+DELIMITER ;
