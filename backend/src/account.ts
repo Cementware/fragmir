@@ -37,8 +37,8 @@ accountRouter.post('/login', async (req: Request, res: Response) => {
     WHERE email = ? OR
       username = ?
     `, [
-      req.body.email,
-      req.body.username
+      req.body.identifier,
+      req.body.identifier
     ]);
     if (!user) return res.status(401).json({ message: 'Invalid email or username' });
 
