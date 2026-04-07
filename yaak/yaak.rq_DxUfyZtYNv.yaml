@@ -1,0 +1,24 @@
+type: http_request
+model: http_request
+id: rq_DxUfyZtYNv
+createdAt: 2026-04-07T12:15:27.675880953
+updatedAt: 2026-04-07T12:15:35.807250060
+workspaceId: wk_bzUjvc2i2q
+folderId: null
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "username": "baller",
+      "password": "pass",
+      "email": "monn@mail.com"
+    }
+bodyType: null
+description: ''
+headers: []
+method: POST
+name: localhost:3000/account/login Copy
+sortPriority: 2000.0
+url: http://localhost:3000/account/logout
+urlParameters: []

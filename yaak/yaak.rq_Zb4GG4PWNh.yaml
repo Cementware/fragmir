@@ -1,8 +1,8 @@
 type: http_request
 model: http_request
-id: rq_pFwJLrgMuU
-createdAt: 2026-04-07T10:54:37.541109204
-updatedAt: 2026-04-07T12:15:29.618677666
+id: rq_Zb4GG4PWNh
+createdAt: 2026-04-07T11:39:31.107523290
+updatedAt: 2026-04-07T12:15:29.621623368
 workspaceId: wk_bzUjvc2i2q
 folderId: null
 authentication: {}
@@ -20,9 +20,9 @@ headers:
 - enabled: true
   name: Content-Type
   value: application/json
-  id: xz6xWKtTyb
+  id: J6zPnfjIsd
 method: POST
 name: ''
-sortPriority: 0.0
-url: http://localhost:3000/account/register
+sortPriority: 1000.0
+url: http://localhost:3000/account/login
 urlParameters: []

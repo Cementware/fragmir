@@ -21,6 +21,7 @@ services:
       DB_PASSWORD: password
       DB_NAME: fragmir
       DB_DATABASE: fragmir
+      JWT_SECRET: ${JWT_SECRET:-$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")}
     depends_on:
       - mariadb
     volumes:
