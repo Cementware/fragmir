@@ -1,0 +1,15 @@
+type: workspace
+model: workspace
+id: wk_bzUjvc2i2q
+createdAt: 2026-04-07T10:53:45.265382215
+updatedAt: 2026-04-07T10:53:45.265383075
+authentication: {}
+authenticationType: null
+description: ''
+headers: []
+name: fragmir
+encryptionKeyChallenge: null
+settingValidateCertificates: true
+settingFollowRedirects: true
+settingRequestTimeout: 0
+settingDnsOverrides: []

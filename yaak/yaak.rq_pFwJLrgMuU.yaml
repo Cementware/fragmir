@@ -1,0 +1,28 @@
+type: http_request
+model: http_request
+id: rq_pFwJLrgMuU
+createdAt: 2026-04-07T10:54:37.541109204
+updatedAt: 2026-04-07T10:57:08.299669404
+workspaceId: wk_bzUjvc2i2q
+folderId: null
+authentication: {}
+authenticationType: null
+body:
+  text: |-
+    {
+      "username": "baller",
+      "password": "pass",
+      "email": "monn@mail.com"
+    }
+bodyType: application/json
+description: ''
+headers:
+- enabled: true
+  name: Content-Type
+  value: application/json
+  id: xz6xWKtTyb
+method: POST
+name: ''
+sortPriority: -1775559277540.0
+url: http://localhost:3000/account/register
+urlParameters: []
