@@ -45,7 +45,7 @@ accountRouter.post('/login', async (req: Request, res: Response) => {
     if (!await argon2.verify(user.password, req.body.password)) return res.status(401).json({ message: 'Invalid password' });
 
     const token = jwt.sign(
-      { userID: user.ID, email: user.email },
+      { ID: user.ID, email: user.email, username: user.username },
       process.env.JWT_SECRET as string,
       { expiresIn: '24h' }
     );
@@ -75,6 +75,10 @@ accountRouter.post('/logout', protect, (_, res: Response) => {
     maxAge: 86400000
   });
   return res.status(200).end();
+});
+
+accountRouter.get('/me', protect, (req: Request, res: Response) => {
+  return res.status(200).json(req.user);
 });
 
 export default accountRouter;

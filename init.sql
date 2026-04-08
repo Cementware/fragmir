@@ -22,7 +22,7 @@ CREATE TABLE question(
   -- wether user who has sent question wishes to remain anonymous
   private BIT DEFAULT 0 NOT NULL,
   question TEXT NOT NULL,
-  answer TEXT NOT NULL,
+  answer TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
   CONSTRAINT fk_sender_id

@@ -18,15 +18,15 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
     setMessage({ message: '', isError: false });
 
     const endpoint = isRegistering
-      ? 'http://localhost:3000/account/register'
-      : 'http://localhost:3000/account/login';
+      ? 'register'
+      : 'login';
 
     const payload = isRegistering
       ? { username, email, password }
       : { identifier, password };
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/account/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

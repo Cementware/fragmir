@@ -6,7 +6,7 @@ const profileRouter = Router();
 profileRouter.get('/list', async (req: Request, res: Response) => {
   try {
     return res.status(200).json(await query(`
-    SELECT username
+    SELECT ID, username
     FROM user
     WHERE username LIKE LOWER(?)
       OR email LIKE LOWER(?)
