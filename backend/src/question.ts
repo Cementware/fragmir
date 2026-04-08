@@ -5,7 +5,6 @@ const questionRouter = Router();
 
 questionRouter.post('/post/:id', async (req: Request, res: Response) => {
   try {
-    console.log(req.user)
     await query(`
     INSERT INTO question (
       SENDER_ID,
