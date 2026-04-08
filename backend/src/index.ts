@@ -1,5 +1,6 @@
 import express, { type Application, type Request, type Response } from "express";
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import requestLogger from "./logger.js";
 import accountRouter from "./account.js";
 import { protect } from "./auth.js";
@@ -9,6 +10,14 @@ import questionRouter from "./question.js";
 const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin: (origin, callback) => {
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
 app.use(requestLogger);
 app.use('/account', accountRouter);
