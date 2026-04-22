@@ -28,4 +28,27 @@ questionRouter.post('/post/:id', async (req: Request, res: Response) => {
   }
 });
 
+questionRouter.post('/answer/:id', async (req: Request, res: Response) => {
+  try {
+    await query(`
+    UPDATE question SET
+    answer = ?,
+    posted = ?
+    WHERE ID = ?
+    `, [
+      req.body.answer,
+      req.body.posted,
+      req.params.id
+    ]);
+    return res.status(200).end();
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: 'Internal server error',
+      message: 'Could not post new question'
+    })
+  }
+});
+
+
 export default questionRouter;
