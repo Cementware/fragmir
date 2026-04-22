@@ -45,10 +45,30 @@ questionRouter.post('/answer/:id', async (req: Request, res: Response) => {
     console.log(err);
     return res.status(500).json({
       error: 'Internal server error',
-      message: 'Could not post new question'
+      message: 'Could not answer question'
     })
   }
 });
 
+questionRouter.get('/list', async (req: Request, res: Response) => {
+  try {
+    return res.status(200).json(await query(`
+    SELECT CASE WHEN (private = 1)
+      THEN Null
+      ELSE SENDER_ID end as sender_id,
+      question,
+      ID
+    FROM question
+    WHERE RECIPIENT_ID = ?`, [
+      req.user.ID
+    ]));
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: 'Internal server error',
+      message: 'Could not fetch questions'
+    })
+  }
+});
 
 export default questionRouter;
