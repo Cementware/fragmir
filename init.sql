@@ -53,6 +53,7 @@ CREATE TABLE event(
   description TEXT NOT NULL,
   CREATOR_ID CHAR(32) NOT NULL,
   time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NULL
   -- wether the user who created the event should be shown
   private BIT DEFAULT 1 NOT NULL,
   LOCATION_ID CHAR(32) NOT NULL,
@@ -128,3 +129,9 @@ BEGIN
 END//
 
 DELIMITER ;
+
+INSERT INTO location (name,location)
+	VALUES ('Bahnhof Bozen', ST_GeomFromText('POINT (46.4967699672929 11.358079186058761)'));
+
+INSERT INTO location (name,location)
+	VALUES ('UNIBZ', ST_GeomFromText('POINT (46.4984152036659 11.350618008025007)'));

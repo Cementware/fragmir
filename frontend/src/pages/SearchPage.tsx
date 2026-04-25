@@ -16,7 +16,10 @@ export default function SearchPage() {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/list${query ? '?q=' + query : ''}`, { credentials: 'include' });
         const data = await response.json();
         setUsers(Array.isArray(data) ? data : []);
-      } catch (err) { setUsers([]); } finally { setLoading(false); }
+      } catch (error) {
+        setUsers([]);
+        alert('Error searching for user: ' + error);
+      } finally { setLoading(false); }
     };
     if (!users)
       searchUsers();

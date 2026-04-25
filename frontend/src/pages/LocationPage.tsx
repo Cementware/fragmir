@@ -15,7 +15,10 @@ export default function EventsPage() {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/location/list${query ? '?q=' + query : ''}`, { credentials: 'include' });
         const data = await response.json();
         setPlaces(Array.isArray(data) ? data : []);
-      } catch (err) { setPlaces([]); } finally { setLoading(false); }
+      } catch (error) {
+        setPlaces([]);
+        alert('Error searching locations: ' + error);
+      } finally { setLoading(false); }
     };
     if (!places)
       searchPlaces();

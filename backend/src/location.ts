@@ -1,4 +1,4 @@
-import { response, Router, type Request, type Response } from 'express';
+import { Router, type Request, type Response } from 'express';
 import { query } from './database.js';
 
 const locationRouter = Router();
@@ -67,13 +67,21 @@ eventRouter.get('/list', async (req: Request, res: Response) => {
     if (req.query.q)
       return res.status(200).json(await query(`
       SELECT
+        ID,
         name,
         description,
-        time
-      FROM event
+        time,
+        end_time,
+        CASE 
+          WHEN e.private = 1 THEN NULL 
+          ELSE (SELECT username FROM user u WHERE  u.ID = e.CREATOR_ID)
+        END AS creator_username,
+        (SELECT COUNT(*) FROM participant p WHERE p.EVENT_ID = e.ID) as participants
+      FROM event e
       WHERE (name LIKE LOWER(?)
       OR description LIKE LOWER(?))
-      AND LOCATION_ID = ?`, [
+      AND LOCATION_ID = ?
+      ORDER BY time, end_time, name`, [
         '%' + req.query.q + '%',
         '%' + req.query.q + '%',
         req.params.location_id
@@ -81,12 +89,20 @@ eventRouter.get('/list', async (req: Request, res: Response) => {
     else
       return res.status(200).json(await query(`
       SELECT
+        ID,
         name,
         description,
-        time
-      FROM event
+        time,
+        end_time,
+        CASE 
+          WHEN e.private = 1 THEN NULL
+          ELSE (SELECT username FROM user u WHERE  u.ID = e.CREATOR_ID)
+        END AS creator_username,
+        (SELECT COUNT(*) FROM participant p WHERE p.EVENT_ID = e.ID) as participants
+      FROM event e
       WHERE LOCATION_ID = ?
-      ORDER BY name
+        AND (end_time > NOW() OR end_time IS NULL)
+      ORDER BY time, end_time, name
       LIMIT 50`, [req.params.location_id]
       ));
   } catch (err) {
@@ -97,5 +113,57 @@ eventRouter.get('/list', async (req: Request, res: Response) => {
     });
   }
 });
+
+eventRouter.post('/post', async (req: Request, res: Response) => {
+  try {
+    await query(`
+    INSERT INTO event (
+      name,
+      time,
+      end_time,
+      description,
+      private,
+      CREATOR_ID,
+      LOCATION_ID
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [
+      req.body.name,
+      req.body.time,
+      req.body.end_time,
+      req.body.description,
+      req.body.private,
+      req.user.ID,
+      req.params.location_id
+    ]);
+    return res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to add event'
+    });
+  }
+});
+
+eventRouter.post('/participate/:event_id', async (req: Request, res: Response) => {
+  try {
+    await query(`
+    INSERT INTO participant(
+      USER_ID,
+      EVENT_ID
+    ) VALUES (?, ?)
+    `, [
+      req.user.ID,
+      req.params.event_id
+    ]);
+    return res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to participate in event'
+    });
+  }
+})
 
 export default locationRouter;

@@ -18,7 +18,10 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
       fetch(`${import.meta.env.VITE_API_URL}/account/me`, { credentials: 'include' })
         .then(response => response.json())
         .then(me => setUsername(me.username))
-        .catch(err => console.error('Failed to fetch username: ', err));
+        .catch(error => {
+          console.error('Failed to fetch username: ', error);
+          alert('Failed to fetch username: ' + error);
+        });
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node))
         setUserMenuOpen(false)
@@ -35,15 +38,15 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
           const notifications = await response.json();
           setUnreadCount(notifications.count);
         }
-      } catch (err) {
-        console.error('Failed to fetch notifications: ', err)
+      } catch (error) {
+        console.error('Failed to fetch notifications: ', error);
+        alert('Failed to fetch notifications: ' + error);
       }
     };
 
     checkNotifications();
 
     const interval = setInterval(checkNotifications, 15000);
-
     return () => clearInterval(interval);
   }, []);
 

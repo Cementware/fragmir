@@ -21,8 +21,9 @@ export default function App() {
           const data = await response.json();
           setUser(data);
         }
-      } catch (err) {
-        console.error("Auth check failed", err);
+      } catch (error) {
+        console.error("Auth check failed", error);
+        alert('Failed to authenticate: ' + error);
       } finally {
         setLoading(false);
       }

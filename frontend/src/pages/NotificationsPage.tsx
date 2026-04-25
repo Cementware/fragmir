@@ -32,6 +32,7 @@ export default function NotificationsPage() {
         setQuestions(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
+        alert('Failed to fetch questions: ' + error);
       } finally {
         setLoading(false);
       }
