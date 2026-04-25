@@ -17,19 +17,11 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
     e.preventDefault();
     setMessage({ message: '', isError: false });
 
-    const endpoint = isRegistering
-      ? 'register'
-      : 'login';
-
-    const payload = isRegistering
-      ? { username, email, password }
-      : { identifier, password };
-
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/account/${endpoint}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/account/${isRegistering ? 'register' : 'login'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(isRegistering ? { username, email, password } : { identifier, password }),
         credentials: 'include'
       });
 
@@ -55,7 +47,7 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {message.message && (
-              <div className={`p-4 rounded-xl flex items-center gap-3 ${message.isError ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'}`}>
+              <div className={`p - 4 rounded - xl flex items - center gap - 3 ${message.isError ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'} `}>
                 <span className="text-sm font-medium">{message.message}</span>
               </div>
             )}

@@ -8,7 +8,7 @@ const accountRouter = Router();
 
 accountRouter.post('/register', async (req: Request, res: Response) => {
   try {
-    await query(`
+    const row: any = await query(`
     INSERT INTO user (
       username,
       password,
@@ -19,7 +19,20 @@ accountRouter.post('/register', async (req: Request, res: Response) => {
       await argon2.hash(req.body.password, { type: argon2.argon2id }),
       req.body.email
     ]);
-    return res.status(200).end();
+
+    const token = jwt.sign(
+      { ID: row.insertID, email: req.body.email, username: req.body.username },
+      process.env.JWT_SECRET as string,
+      { expiresIn: '24h' }
+    );
+
+    return res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 86400000
+    }).status(200).end();
   } catch (err) {
     console.error(err);
     return res.status(500).json({
