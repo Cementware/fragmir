@@ -8,7 +8,7 @@ const accountRouter = Router();
 
 accountRouter.post('/register', async (req: Request, res: Response) => {
   try {
-    const row: any = await query(`
+    await query(`
     INSERT INTO user (
       username,
       password,
@@ -20,15 +20,24 @@ accountRouter.post('/register', async (req: Request, res: Response) => {
       req.body.email
     ]);
 
+    const [user]: any = await query(`
+    SELECT ID
+    FROM user
+    WHERE email = ? AND username = ?
+    `, [
+      req.body.email,
+      req.body.username,
+    ]);
+
     const token = jwt.sign(
-      { ID: row.insertID, email: req.body.email, username: req.body.username },
+      { ID: user.ID, email: req.body.email, username: req.body.username },
       process.env.JWT_SECRET as string,
       { expiresIn: '24h' }
     );
 
     return res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'strict',
       path: '/',
       maxAge: 86400000
@@ -65,9 +74,8 @@ accountRouter.post('/login', async (req: Request, res: Response) => {
 
     return res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
+      secure: false,
+      sameSite: 'lax',
       maxAge: 86400000
     }).status(200).end();
   } catch (err) {
@@ -83,8 +91,7 @@ accountRouter.post('/logout', protect, (_, res: Response) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
-    path: '/',
+    sameSite: 'lax',
     maxAge: 86400000
   });
   return res.status(200).end();

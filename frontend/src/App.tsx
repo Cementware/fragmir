@@ -1,7 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import AuthPage from './pages/AuthPage';
-import Dashboard from './pages/Dashboard';
+import Layout from './components/Layout';
+import SearchPage from './pages/SearchPage';
+import EventsPage from './pages/EventsPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -47,16 +50,16 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-slate-50">
-        <Routes>
-          <Route path="/login" element={
-            !user ? <AuthPage onLogin={setUser} /> : <Navigate to="/" />
-          } />
-          <Route path="/" element={
-            user ? <Dashboard onLogout={handleLogout} /> : <Navigate to="/login" />
-          } />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={!user ? <AuthPage onLogin={setUser} /> : <Navigate to="/" />} />
+
+        {/* All protected routes live inside the Layout */}
+        <Route path="/" element={user ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" />}>
+          <Route index element={<SearchPage />} />
+          <Route path="events" element={<EventsPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }

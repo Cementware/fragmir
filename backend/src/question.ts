@@ -53,15 +53,20 @@ questionRouter.post('/answer/:id', async (req: Request, res: Response) => {
 questionRouter.get('/list', async (req: Request, res: Response) => {
   try {
     return res.status(200).json(await query(`
-    SELECT CASE WHEN (private = 1)
-      THEN Null
-      ELSE SENDER_ID end as sender_id,
-      question,
-      ID
-    FROM question
-    WHERE RECIPIENT_ID = ?`, [
+      SELECT 
+          q.ID,
+          q.question,
+          q.created_at,
+          CASE 
+              WHEN q.private = 1 THEN NULL 
+              ELSE u.username 
+          END AS sender_username
+      FROM question q
+      LEFT JOIN user u ON q.SENDER_ID  = u.ID
+      WHERE q.RECIPIENT_ID  = ?`, [
       req.user.ID
-    ]));
+    ]
+    ));
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -70,5 +75,24 @@ questionRouter.get('/list', async (req: Request, res: Response) => {
     })
   }
 });
+
+questionRouter.get('/notifications', async (req: Request, res: Response) => {
+  try {
+    const [row] = await query(`
+    SELECT COUNT(*) AS count
+    FROM question
+    WHERE RECIPIENT_ID = ?
+    AND answer IS NULL`,
+      [req.user.ID]
+    );
+    return res.status(200).json({ count: Number(row.count) });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: 'Internal server error',
+      message: 'Could not fetch questions'
+    })
+  }
+})
 
 export default questionRouter;

@@ -35,8 +35,10 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
     environment:
-      VITE_API_URL: http://localhost:3000
+      VITE_API_URL: /api
     depends_on:
       - backend
 

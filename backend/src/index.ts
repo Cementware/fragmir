@@ -1,4 +1,4 @@
-import express, { type Application, type Request, type Response } from "express";
+import express, { type Application } from "express";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import requestLogger from "./logger.js";
@@ -11,8 +11,12 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: (_, callback) => {
-    callback(null, true);
+  origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true);
+    } else {
+      callback(null, origin);
+    }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
