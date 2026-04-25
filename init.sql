@@ -53,8 +53,7 @@ CREATE TABLE event(
   description TEXT NOT NULL,
   CREATOR_ID CHAR(32) NOT NULL,
   time TIMESTAMP NOT NULL,
-  end_time TIMESTAMP NULL
-  -- wether the user who created the event should be shown
+  end_time TIMESTAMP NULL,
   private BIT DEFAULT 1 NOT NULL,
   LOCATION_ID CHAR(32) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

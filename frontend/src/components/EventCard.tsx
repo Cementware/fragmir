@@ -68,7 +68,8 @@ const EventCard = ({ event, location_id }: { event: Event, location_id?: string 
         <div className="flex items-center gap-2 text-slate-500 text-sm">
           <Clock size={14} />
           <span>{eventDate}</span>
-          {event.end_time && <span> - {eventEndDate}</span>}
+          {event.end_time && <span>-</span>}
+          {event.end_time && <span>{eventEndDate}</span>}
         </div>
         {event.creator_username && (
           <div className="flex gap-2 border-t border-slate-50">
