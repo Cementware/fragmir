@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_Zb4GG4PWNh
 createdAt: 2026-04-07T11:39:31.107523290
-updatedAt: 2026-04-07T12:15:29.621623368
+updatedAt: 2026-04-25T15:13:55.403779132
 workspaceId: wk_bzUjvc2i2q
 folderId: null
 authentication: {}
@@ -10,9 +10,8 @@ authenticationType: null
 body:
   text: |-
     {
-      "username": "baller",
-      "password": "pass",
-      "email": "monn@mail.com"
+      "identifier": "monn",
+      "password": "123",
     }
 bodyType: application/json
 description: ''
@@ -24,5 +23,5 @@ headers:
 method: POST
 name: ''
 sortPriority: 1000.0
-url: http://localhost:3000/account/login
+url: http://localhost:5173/api/account/login
 urlParameters: []

@@ -5,18 +5,27 @@ const profileRouter = Router();
 
 profileRouter.get('/list', async (req: Request, res: Response) => {
   try {
-    console.log(req.user)
-    return res.status(200).json(await query(`
+    if (req.query.q)
+      return res.status(200).json(await query(`
     SELECT ID, username
     FROM user
     WHERE (username LIKE LOWER(?)
       OR email LIKE LOWER(?))
       AND ID <> ?
     `, [
-      '%' + req.query.q + '%',
-      '%' + req.query.q + '%',
-      req.user.ID
-    ]));
+        '%' + req.query.q + '%',
+        '%' + req.query.q + '%',
+        req.user.ID
+      ]));
+    else
+      return res.status(200).json(await query(`
+        SELECT ID, username
+        FROM user
+        WHERE ID <> ?
+        ORDER BY username
+        LIMIT 50`,
+        [req.user.ID]
+      ));
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -24,7 +33,6 @@ profileRouter.get('/list', async (req: Request, res: Response) => {
       message: 'Failed to search for users'
     });
   }
-  return res.status(200).end();
 });
 
 profileRouter.get('/by-id/:id', async (req: Request, res: Response) => {
@@ -43,7 +51,6 @@ profileRouter.get('/by-id/:id', async (req: Request, res: Response) => {
       message: 'Failed to find user'
     });
   }
-  return res.status(200).end();
 });
 
 export default profileRouter;

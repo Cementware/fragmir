@@ -2,18 +2,13 @@ type: http_request
 model: http_request
 id: rq_pFwJLrgMuU
 createdAt: 2026-04-07T10:54:37.541109204
-updatedAt: 2026-04-07T12:15:29.618677666
+updatedAt: 2026-04-25T15:14:22.012926534
 workspaceId: wk_bzUjvc2i2q
 folderId: null
 authentication: {}
 authenticationType: null
 body:
-  text: |-
-    {
-      "username": "baller",
-      "password": "pass",
-      "email": "monn@mail.com"
-    }
+  text: ''
 bodyType: application/json
 description: ''
 headers:
@@ -21,8 +16,8 @@ headers:
   name: Content-Type
   value: application/json
   id: xz6xWKtTyb
-method: POST
+method: GET
 name: ''
 sortPriority: 0.0
-url: http://localhost:3000/account/register
+url: http://localhost:5173/api/account/me
 urlParameters: []

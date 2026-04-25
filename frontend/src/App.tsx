@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import AuthPage from './pages/AuthPage';
 import Layout from './components/Layout';
 import SearchPage from './pages/SearchPage';
-import EventsPage from './pages/EventsPage';
+import LocationPage from './pages/LocationPage';
 import NotificationsPage from './pages/NotificationsPage';
+import EventsPage from './pages/EventsPage';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -56,8 +57,9 @@ export default function App() {
         {/* All protected routes live inside the Layout */}
         <Route path="/" element={user ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" />}>
           <Route index element={<SearchPage />} />
-          <Route path="events" element={<EventsPage />} />
+          <Route path="locations" element={<LocationPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
+          <Route path='locations/:location_id' element={<EventsPage />} />
         </Route>
       </Routes>
     </Router>

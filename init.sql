@@ -23,6 +23,7 @@ CREATE TABLE question(
   private BIT DEFAULT 0 NOT NULL,
   question TEXT NOT NULL,
   answer TEXT,
+  posted BIT DEFAULT 1 NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
   CONSTRAINT fk_sender_id

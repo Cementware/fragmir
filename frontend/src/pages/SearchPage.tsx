@@ -4,22 +4,23 @@ import { useState, useEffect } from 'react';
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [question, setQuestion] = useState('');
   const [isRedacted, setIsRedacted] = useState(false);
 
   useEffect(() => {
     const searchUsers = async () => {
-      if (query.length < 2) { setUsers([]); return; }
       setLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/list?q=${query}`, { credentials: 'include' });
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/list${query ? '?q=' + query : ''}`, { credentials: 'include' });
         const data = await response.json();
         setUsers(Array.isArray(data) ? data : []);
       } catch (err) { setUsers([]); } finally { setLoading(false); }
     };
-    const timeoutId = setTimeout(searchUsers, 300);
+    if (!users)
+      searchUsers();
+    const timeoutId = setTimeout(searchUsers, 500);
     return () => clearTimeout(timeoutId);
   }, [query]);
 

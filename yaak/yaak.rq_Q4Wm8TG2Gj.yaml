@@ -2,7 +2,7 @@ type: http_request
 model: http_request
 id: rq_Q4Wm8TG2Gj
 createdAt: 2026-04-07T12:02:37.330871664
-updatedAt: 2026-04-07T12:15:29.627538742
+updatedAt: 2026-04-25T16:50:09.108674152
 workspaceId: wk_bzUjvc2i2q
 folderId: null
 authentication:
@@ -17,5 +17,5 @@ headers: []
 method: GET
 name: ''
 sortPriority: 3000.0
-url: http://localhost:3000/profile/list
+url: http://localhost:5173/api/location/event/b46c2872faeb2071f6bda8bc18131302/list
 urlParameters: []

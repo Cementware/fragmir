@@ -110,8 +110,8 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
           <span className="text-[10px] font-bold uppercase tracking-widest">Search</span>
         </button>
         <button
-          onClick={() => navigate('/events')}
-          className={`flex flex-col items-center gap-1 flex-1 ${isActive('/events') ? 'text-indigo-600' : 'text-slate-400'}`}
+          onClick={() => navigate('/locations')}
+          className={`flex flex-col items-center gap-1 flex-1 ${isActive('/locations') ? 'text-indigo-600' : 'text-slate-400'}`}
         >
           <MapPin size={24} />
           <span className="text-[10px] font-bold uppercase tracking-widest">Events</span>

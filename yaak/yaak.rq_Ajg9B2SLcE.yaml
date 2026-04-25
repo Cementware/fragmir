@@ -1,0 +1,21 @@
+type: http_request
+model: http_request
+id: rq_Ajg9B2SLcE
+createdAt: 2026-04-25T16:52:46.312822203
+updatedAt: 2026-04-25T16:52:52.821454308
+workspaceId: wk_bzUjvc2i2q
+folderId: null
+authentication:
+  disabled: true
+  secret: ''
+  secretBase64: false
+authenticationType: jwt
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: localhost:5173/api/location/event/b46c2872faeb2071f6bda8bc18131302/list Copy
+sortPriority: 3000.001
+url: http://localhost:5173/api/location/info/b46c2872faeb2071f6bda8bc18131302
+urlParameters: []
