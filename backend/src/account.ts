@@ -46,7 +46,7 @@ accountRouter.post('/register', async (req: Request, res: Response) => {
     console.error(err);
     return res.status(500).json({
       error: 'Internal Server Error',
-      message: 'Failed to register user'
+      message: 'Failed to register user. Try a different username'
     })
   }
 });

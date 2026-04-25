@@ -5,14 +5,17 @@ const profileRouter = Router();
 
 profileRouter.get('/list', async (req: Request, res: Response) => {
   try {
+    console.log(req.user)
     return res.status(200).json(await query(`
     SELECT ID, username
     FROM user
-    WHERE username LIKE LOWER(?)
-      OR email LIKE LOWER(?)
+    WHERE (username LIKE LOWER(?)
+      OR email LIKE LOWER(?))
+      AND ID <> ?
     `, [
       '%' + req.query.q + '%',
-      '%' + req.query.q + '%'
+      '%' + req.query.q + '%',
+      req.user.ID
     ]));
   } catch (err) {
     console.error(err);

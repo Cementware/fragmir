@@ -9,9 +9,12 @@ interface Question {
 }
 
 export default function NotificationsPage() {
+  const [selectedQuestion, setSelectedQuestion] = useState<Question | null>();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [response, setResponse] = useState('');
+  const [posted, setPosted] = useState(true);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -34,8 +37,23 @@ export default function NotificationsPage() {
       }
     };
 
-    fetchQuestions();
-  }, []);
+    if (!selectedQuestion)
+      fetchQuestions();
+  }, [selectedQuestion]);
+
+  const handleSendQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedQuestion) return;
+    await fetch(`${import.meta.env.VITE_API_URL}/question/answer/${selectedQuestion.ID}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ response: response, posted: posted }),
+      credentials: 'include'
+    });
+    setSelectedQuestion(null);
+    setResponse('');
+    setPosted(true);
+  };
 
   if (loading) {
     return (
@@ -56,7 +74,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-black text-slate-800">Inbox</h2>
         <span className="bg-indigo-100 text-indigo-600 text-xs font-black px-3 py-1 rounded-full uppercase">
@@ -87,11 +105,52 @@ export default function NotificationsPage() {
               <p className="text-slate-700 leading-relaxed font-medium">
                 {q.question}
               </p>
-              <button className="mt-4 text-xs font-black text-slate-400 group-hover:text-indigo-600 transition uppercase tracking-widest">
+              <button
+                onClick={() => setSelectedQuestion(q)}
+                className="mt-4 text-xs font-black text-slate-400 group-hover:text-indigo-600 transition uppercase tracking-widest">
                 Reply to Question
               </button>
             </div>
           ))}
+        </div>
+      )}
+      {selectedQuestion && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <form onSubmit={handleSendQuestion} className="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl">
+            <span className='text-xl font-bold text-slate-800'>{selectedQuestion.sender_username ? `@${selectedQuestion.sender_username}` : 'Anonymous'} </span>
+            <span className='text-xl text-slate-700'>asked:</span>
+            <p className='pt-3 pb-3 text-slate-700'>{selectedQuestion.question}</p>
+            <textarea
+              required
+              className="w-full p-4 rounded-2xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-indigo-500 min-h-[150px] mb-4"
+              placeholder="Answer the question..."
+              value={response}
+              onChange={(e) => setResponse(e.target.value)}
+            />
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-sm font-semibold text-slate-600">Post after answering</span>
+              <button
+                type="button"
+                onClick={() => setPosted(!posted)}
+                className={`w-12 h-6 rounded-full transition-colors relative ${posted ? 'bg-indigo-600' : 'bg-slate-200'}`}
+              >
+                <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${posted ? 'translate-x-6' : ''}`} />
+              </button>
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedQuestion(null)}
+                className="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200">
+                {posted ? 'Answer & Post' : 'Answer'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>

@@ -36,7 +36,7 @@ questionRouter.post('/answer/:id', async (req: Request, res: Response) => {
     posted = ?
     WHERE ID = ?
     `, [
-      req.body.answer,
+      req.body.response,
       req.body.posted,
       req.params.id
     ]);
@@ -63,7 +63,8 @@ questionRouter.get('/list', async (req: Request, res: Response) => {
           END AS sender_username
       FROM question q
       LEFT JOIN user u ON q.SENDER_ID  = u.ID
-      WHERE q.RECIPIENT_ID  = ?`, [
+      WHERE q.RECIPIENT_ID  = ?
+        AND answer IS NULL`, [
       req.user.ID
     ]
     ));

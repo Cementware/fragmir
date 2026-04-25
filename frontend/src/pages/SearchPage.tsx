@@ -1,3 +1,4 @@
+import { LucideMailQuestionMark } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function SearchPage() {
@@ -38,7 +39,7 @@ export default function SearchPage() {
     <div className="animate-in fade-in duration-500">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Find People</h2>
       <input
-        type="text"
+        type="search"
         placeholder="Username or email..."
         className="w-full px-6 py-4 rounded-2xl border border-slate-200 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none mb-6"
         value={query}
@@ -50,7 +51,11 @@ export default function SearchPage() {
         {users.map((user) => (
           <div key={user.username} className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center">
             <p className="font-bold text-slate-800">@{user.username}</p>
-            <button onClick={() => setSelectedUser(user)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition">?</button>
+            <button
+              onClick={() => setSelectedUser(user)}
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition">
+              <LucideMailQuestionMark size={24} />
+            </button>
           </div>
         ))}
       </div>

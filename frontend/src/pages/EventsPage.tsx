@@ -17,7 +17,7 @@ export default function EventsPage() {
         <>
           <h2 className="text-2xl font-bold text-slate-800 mb-6">Explore Places</h2>
           <input
-            type="text"
+            type="search"
             placeholder="Find a location..."
             className="w-full px-6 py-4 rounded-2xl border border-slate-200 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none mb-6"
             value={placeQuery}
@@ -25,7 +25,7 @@ export default function EventsPage() {
           />
           <div className="grid gap-4">
             {places.map(place => (
-              <button 
+              <button
                 key={place.id}
                 onClick={() => setSelectedPlace(place)}
                 className="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm text-left hover:border-indigo-200 hover:shadow-md transition group"
@@ -45,13 +45,13 @@ export default function EventsPage() {
         </>
       ) : (
         <div className="animate-in slide-in-from-right duration-300">
-          <button 
-            onClick={() => setSelectedPlace(null)} 
+          <button
+            onClick={() => setSelectedPlace(null)}
             className="mb-6 text-indigo-600 font-bold flex items-center gap-2 hover:translate-x-[-4px] transition-transform"
           >
             ← Back to All Places
           </button>
-          
+
           <div className="bg-indigo-600 p-8 rounded-3xl text-white mb-8 shadow-xl shadow-indigo-100">
             <h2 className="text-3xl font-black">{selectedPlace.name}</h2>
             <p className="opacity-80">{selectedPlace.address}</p>
