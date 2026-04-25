@@ -64,6 +64,7 @@ locationRouter.get('/info/:location_id', async (req: Request, res: Response) => 
 
 eventRouter.get('/list', async (req: Request, res: Response) => {
   try {
+    console.log(req)
     if (req.query.q)
       return res.status(200).json(await query(`
       SELECT
@@ -76,7 +77,8 @@ eventRouter.get('/list', async (req: Request, res: Response) => {
           WHEN e.private = 1 THEN NULL 
           ELSE (SELECT username FROM user u WHERE  u.ID = e.CREATOR_ID)
         END AS creator_username,
-        (SELECT COUNT(*) FROM participant p WHERE p.EVENT_ID = e.ID) as participants
+        (SELECT COUNT(*) FROM participant p WHERE p.EVENT_ID = e.ID) as participants,
+        EXISTS (SELECT 1 FROM participant p WHERE p.EVENT_ID = e.ID AND p.USER_ID = ?) AS participating
       FROM event e
       WHERE (name LIKE LOWER(?)
       OR description LIKE LOWER(?))
@@ -84,7 +86,8 @@ eventRouter.get('/list', async (req: Request, res: Response) => {
       ORDER BY time, end_time, name`, [
         '%' + req.query.q + '%',
         '%' + req.query.q + '%',
-        req.params.location_id
+        req.user.ID,
+        req.params.location_id,
       ]));
     else
       return res.status(200).json(await query(`
@@ -98,13 +101,16 @@ eventRouter.get('/list', async (req: Request, res: Response) => {
           WHEN e.private = 1 THEN NULL
           ELSE (SELECT username FROM user u WHERE  u.ID = e.CREATOR_ID)
         END AS creator_username,
-        (SELECT COUNT(*) FROM participant p WHERE p.EVENT_ID = e.ID) as participants
+        (SELECT COUNT(*) FROM participant p WHERE p.EVENT_ID = e.ID) as participants,
+        EXISTS (SELECT 1 FROM participant p WHERE p.EVENT_ID = e.ID AND p.USER_ID = ?) AS participating
       FROM event e
       WHERE LOCATION_ID = ?
         AND (end_time > NOW() OR end_time IS NULL)
       ORDER BY time, end_time, name
-      LIMIT 50`, [req.params.location_id]
-      ));
+      LIMIT 50`, [
+        req.user.ID,
+        req.params.location_id,
+      ]));
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -164,6 +170,27 @@ eventRouter.post('/participate/:event_id', async (req: Request, res: Response) =
       message: 'Failed to participate in event'
     });
   }
+});
+
+eventRouter.delete('/participate/:event_id', async (req: Request, res: Response) => {
+  try {
+    await query(`
+    DELETE FROM participant
+    WHERE USER_ID = ?
+      AND EVENT_ID = ?
+    `, [
+      req.user.ID,
+      req.params.event_id
+    ]);
+    return res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: 'Failed to participate in event'
+    });
+  }
 })
+
 
 export default locationRouter;

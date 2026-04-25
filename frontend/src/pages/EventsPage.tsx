@@ -6,7 +6,16 @@ import EventCard from '../components/EventCard';
 
 export default function PlaceDetailPage() {
   const [showAddForm, setShowAddForm] = useState(false);
-  const [events, setEvents] = useState<{ ID: string, name: string, description: string, time: string }[]>([]);
+  const [events, setEvents] = useState<{
+    ID: string,
+    name: string,
+    description: string,
+    time: string,
+    end_time: string,
+    participants: number,
+    participating: boolean,
+    creator_username: string
+  }[]>([]);
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState<{ name: string, location: { coordinates: number[] } } | null>(null)
   const [loading, setLoading] = useState(true);
@@ -63,7 +72,7 @@ export default function PlaceDetailPage() {
       {/* Ongoing Events List */}
       <section>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <h2 className="text-l font-bold mb-4 flex items-center gap-2">
             <Calendar size={20} />
             Ongoing and Upcoming Events
           </h2>
@@ -86,7 +95,7 @@ export default function PlaceDetailPage() {
           {loading && <p className="text-center text-slate-400 italic">Searching...</p>}
           {events.length > 0 && (
             events.map(event => (
-              <EventCard key={event.ID} event={event} />
+              <EventCard key={event.ID} event={event} location_id={location_id} />
             ))
           )}
           {!loading && !events && (
@@ -98,7 +107,7 @@ export default function PlaceDetailPage() {
       </section>
 
       {showAddForm && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
+        <div className="fixed inset-0 z-100 flex items-end sm:items-center justify-center">
 
           {/* 1. The Dimmed Backdrop */}
           <div
