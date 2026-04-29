@@ -2,9 +2,9 @@ type: http_request
 model: http_request
 id: rq_pFwJLrgMuU
 createdAt: 2026-04-07T10:54:37.541109204
-updatedAt: 2026-04-25T15:14:22.012926534
+updatedAt: 2026-04-29T11:50:12.081305362
 workspaceId: wk_bzUjvc2i2q
-folderId: null
+folderId: fl_irJuQUZvKe
 authentication: {}
 authenticationType: null
 body:
@@ -18,6 +18,6 @@ headers:
   id: xz6xWKtTyb
 method: GET
 name: ''
-sortPriority: 0.0
+sortPriority: 1000.0
 url: http://localhost:5173/api/account/me
 urlParameters: []

@@ -6,6 +6,7 @@ import SearchPage from './pages/SearchPage';
 import LocationPage from './pages/LocationPage';
 import NotificationsPage from './pages/NotificationsPage';
 import EventsPage from './pages/EventsPage';
+import ProfilePage from './pages/ProfilePage';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="locations" element={<LocationPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path='locations/:location_id' element={<EventsPage />} />
+          <Route path='profile/:user_id' element={<ProfilePage />} />
         </Route>
       </Routes>
     </Router>

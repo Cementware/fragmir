@@ -11,13 +11,14 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
 
   const [unreadCount, setUnreadCount] = useState(0);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [username, setUsername] = useState('');
+  const [user, setUser] = useState<{ username: string, ID: string } | null>(null);
+
 
   useEffect(() => {
-    if (!username)
+    if (!user)
       fetch(`${import.meta.env.VITE_API_URL}/account/me`, { credentials: 'include' })
         .then(response => response.json())
-        .then(me => setUsername(me.username))
+        .then(setUser)
         .catch(error => {
           console.error('Failed to fetch username: ', error);
           alert('Failed to fetch username: ' + error);
@@ -80,7 +81,7 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
             {userMenuOpen && (
               <div className="absolute right-0 top-full pt-2 w-48 animate-in fade-in zoom-in-95 duration-150 shadow-2xl z-50 rounded-2xl">
                 <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden p-1">
-                  <span className="w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-500 font-bold">{username}</span>
+                  <span className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-500 font-bold" onClick={() => { navigate(`/profile/${user && user.ID}`); setUserMenuOpen(!userMenuOpen) }}>{user && user.username}</span>
                   <button
                     onClick={() => {
                       setUserMenuOpen(false);

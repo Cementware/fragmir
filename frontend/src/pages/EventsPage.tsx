@@ -1,6 +1,6 @@
-import { Calendar, MapPin, X } from 'lucide-react';
+import { Calendar, ChevronLeft, MapPin, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AddEventForm from '../components/EventForm';
 import EventCard from '../components/EventCard';
 
@@ -52,10 +52,16 @@ export default function PlaceDetailPage() {
     return () => clearTimeout(timeoutId);
   }, [query]);
 
+  const navigate = useNavigate();
+
   return (
     <div className="max-w-2xl mx-auto p-4 pb-20">
       {/* Header Section */}
+      {/* Top Navigation Bar */}
       <header className="mb-8 flex justify-between items-center">
+        <button onClick={() => navigate(-1)} className="p-2 hover:bg-slate-100 rounded-full transition">
+          <ChevronLeft size={24} className="text-slate-600" />
+        </button>
         <h1 className="text-3xl font-black text-slate-900">{location?.name}</h1>
 
         <a

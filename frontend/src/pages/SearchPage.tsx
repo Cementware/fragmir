@@ -1,5 +1,6 @@
 import { LucideMailQuestionMark } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -8,6 +9,7 @@ export default function SearchPage() {
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const [question, setQuestion] = useState('');
   const [isRedacted, setIsRedacted] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const searchUsers = async () => {
@@ -53,11 +55,11 @@ export default function SearchPage() {
       <div className="space-y-3">
         {loading && <p className="text-center text-slate-400 italic">Searching...</p>}
         {users.map((user) => (
-          <div key={user.username} className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center">
+          <div key={user.username} className="cursor-pointer p-4 bg-white rounded-xl border border-slate-100 shadow-sm flex justify-between items-center" onClick={() => navigate(`/profile/${user.ID}`)}>
             <p className="font-bold text-slate-800">@{user.username}</p>
             <button
-              onClick={() => setSelectedUser(user)}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition">
+              onClick={(event) => { event.stopPropagation(); setSelectedUser(user) }}
+              className="z-50 w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition">
               <LucideMailQuestionMark size={24} />
             </button>
           </div>

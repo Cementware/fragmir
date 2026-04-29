@@ -94,6 +94,38 @@ questionRouter.get('/notifications', async (req: Request, res: Response) => {
       message: 'Could not fetch questions'
     })
   }
-})
+});
+
+// fetches all public questions from a user
+questionRouter.get('/posts/:id', async (req: Request, res: Response) => {
+  try {
+    return res.status(200).json(await query(`
+    SELECT
+      q.ID,
+      q.question,
+      q.answer,
+      CASE 
+        WHEN q.private = 1 THEN NULL 
+        ELSE (SELECT username
+                FROM user s
+                WHERE s.ID = q.SENDER_ID)
+      END AS sender_username,
+      q.created_at
+    FROM question q
+    WHERE posted = 1
+      AND RECIPIENT_ID = ?
+    `, [
+      req.params.id,
+      req.params.id
+    ]));
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: 'Internal server error',
+      message: 'Could not fetch questions'
+    })
+  }
+
+});
 
 export default questionRouter;
