@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUser } from '../context/UserContext';
 
 interface AuthPageProps {
   onLogin: (user: any) => void;
@@ -12,6 +13,8 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
   const [email, setEmail] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+
+  const { fetchAll } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +36,8 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
       }
     } catch (err) {
       setMessage({ message: "Could not connect to server", isError: true });
+    } finally {
+      await fetchAll();
     }
   };
 
