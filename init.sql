@@ -12,6 +12,7 @@ CREATE TABLE user(
   username VARCHAR(64) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
   email VARCHAR(128) NOT NULL UNIQUE,
+  points INT DEFAULT 0 NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -23,7 +24,7 @@ CREATE TABLE question(
   private BIT DEFAULT 0 NOT NULL,
   question TEXT NOT NULL,
   answer TEXT,
-  posted BIT DEFAULT 1 NOT NULL,
+  posted BIT DEFAULT 0 NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
   CONSTRAINT fk_sender_id
@@ -125,6 +126,35 @@ BEGIN
   IF NEW.ID IS NULL OR NEW.ID = '' THEN
     SET NEW.ID = MD5(concat(NEW.name, NEW.LOCATION_ID, NOW()));
   END IF;
+END//
+
+CREATE TRIGGER increment_user_answer
+AFTER UPDATE ON question
+FOR EACH ROW
+BEGIN
+  IF NEW.posted = 1 AND OLD.posted <> 1 THEN
+    UPDATE user
+    SET points = points + 1
+    WHERE ID = OLD.RECIPIENT_ID;
+  END IF;
+END//
+
+CREATE TRIGGER increment_user_event_join
+AFTER INSERT ON participant
+FOR EACH ROW
+BEGIN
+  UPDATE user
+  SET points = points + 5
+  WHERE ID = NEW.USER_ID;
+END//
+
+CREATE TRIGGER increment_user_event_leave
+AFTER DELETE ON participant
+FOR EACH ROW
+BEGIN
+  UPDATE user
+  SET points = points - 5
+  WHERE ID = OLD.USER_ID;
 END//
 
 DELIMITER ;

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AddEventForm from '../components/EventForm';
 import EventCard from '../components/EventCard';
+import { useUser } from '../context/UserContext';
 
 export default function PlaceDetailPage() {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -20,6 +21,7 @@ export default function PlaceDetailPage() {
   const [location, setLocation] = useState<{ name: string, location: { coordinates: number[] } } | null>(null)
   const [loading, setLoading] = useState(true);
   const { location_id } = useParams<{ location_id: string }>();
+  const { user } = useUser();
 
   const searchEvents = async () => {
     setLoading(true);
@@ -83,10 +85,11 @@ export default function PlaceDetailPage() {
             Ongoing and Upcoming Events
           </h2>
           <button
+            disabled={!!user && user.points < 50}
             onClick={() => setShowAddForm(!showAddForm)}
-            className="text-sm bg-slate-100 px-4 py-2 rounded-full font-bold hover:bg-slate-200"
+            className="text-sm bg-slate-100 px-4 py-2 rounded-full font-bold hover:bg-slate-200!!user && user.points < 50 ? 'normal !important' : 'cursor'"
           >
-            {showAddForm ? 'Cancel' : '+ Add Event'}
+            {!!user && user.points < 50 ? 'Not yet available' : '+ Add Event'}
           </button>
         </div>
         <input
@@ -110,7 +113,7 @@ export default function PlaceDetailPage() {
             </div>
           )}
         </div>
-      </section>
+      </section >
 
       {showAddForm && (
         <div className="fixed inset-0 z-100 flex items-end sm:items-center justify-center">
@@ -146,7 +149,8 @@ export default function PlaceDetailPage() {
             />
           </div>
         </div>
-      )}
+      )
+      }
     </div >
   );
 }

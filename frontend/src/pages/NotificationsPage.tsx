@@ -15,6 +15,8 @@ export default function NotificationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState('');
   const [posted, setPosted] = useState(true);
+  const [popups, setPopups] = useState<{ id: number, text: string, offset: number }[]>([]);
+  const [posting, setPosting] = useState(false);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -44,6 +46,15 @@ export default function NotificationsPage() {
 
   const handleSendQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (posted) {
+      const id = Date.now();
+      setPopups((prev) => [...prev, { id, text: '+1', offset: Math.floor(Math.random() * 40) - 20 }]);
+      setTimeout(() => {
+        setPopups((prev) => prev.filter((p) => p.id !== id));
+      }, 800);
+    }
+
     if (!selectedQuestion) return;
     await fetch(`${import.meta.env.VITE_API_URL}/question/answer/${selectedQuestion.ID}`, {
       method: 'POST',
@@ -51,6 +62,15 @@ export default function NotificationsPage() {
       body: JSON.stringify({ response: response, posted: posted }),
       credentials: 'include'
     });
+
+    if (posted)
+      await new Promise((resolve) => {
+        setPosting(true);
+        setTimeout((arg) => {
+          setPosting(false);
+          resolve(arg)
+        }, 1000);
+      });
     setSelectedQuestion(null);
     setResponse('');
     setPosted(true);
@@ -147,8 +167,18 @@ export default function NotificationsPage() {
               </button>
               <button
                 type="submit"
-                className="flex-1 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200">
-                {posted ? 'Answer & Post' : 'Answer'}
+                disabled={posting}
+                className="relative flex-1 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200">
+                {popups.map((popup) => (
+                  <span
+                    key={popup.id}
+                    style={{ left: `calc(50% + ${popup.offset}px)` }}
+                    className="absolute top-0 -translate-x-1/2 pointer-events-none font-black text-xl animate-fly-up z-50 text-emerald-500"
+                  >
+                    {popup.text}
+                  </span>
+                ))}
+                {posted ? posting ? 'Posting...' : 'Answer & Post' : 'Answer'}
               </button>
             </div>
           </form>

@@ -64,7 +64,6 @@ locationRouter.get('/info/:location_id', async (req: Request, res: Response) => 
 
 eventRouter.get('/list', async (req: Request, res: Response) => {
   try {
-    console.log(req)
     if (req.query.q)
       return res.status(200).json(await query(`
       SELECT

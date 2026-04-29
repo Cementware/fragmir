@@ -38,7 +38,9 @@ profileRouter.get('/list', async (req: Request, res: Response) => {
 profileRouter.get('/by-id/:id', async (req: Request, res: Response) => {
   try {
     const [user]: { username: string } = await query(`
-    SELECT username
+    SELECT
+      username,
+      points
     FROM user
     WHERE ID = ?`, [
       req.params.id

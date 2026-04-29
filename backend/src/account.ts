@@ -97,8 +97,11 @@ accountRouter.post('/logout', protect, (_, res: Response) => {
   return res.status(200).end();
 });
 
-accountRouter.get('/me', protect, (req: Request, res: Response) => {
-  return res.status(200).json(req.user);
+accountRouter.get('/me', protect, async (req: Request, res: Response) => {
+  if (!(await query(`SELECT 1 FROM user WHERE ID = ?`, [req.user.ID]) as any[]).length)
+    return res.status(401).json({});
+  const [user]: any[] = await query(`SELECT ID, username, points FROM user WHERE ID = ?`, [req.user.ID]);
+  return res.status(200).json(user);
 });
 
 export default accountRouter;

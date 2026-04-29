@@ -12,7 +12,7 @@ interface QuestionPost {
 
 export default function ProfilePage() {
   const { user_id } = useParams<{ user_id: string }>();
-  const [username, setUsername] = useState('');
+  const [user, setUser] = useState<{ username: string, points: number } | null>(null);
   const navigate = useNavigate();
   const [posts, setPosts] = useState<QuestionPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,24 +33,20 @@ export default function ProfilePage() {
     }
   };
 
-  const fetchUserName = async () => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/profile/by-id/${user_id}`, { credentials: 'include' });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        setUsername(data.username);
-      }
-    } catch (error) {
-      console.error("Error fetching username:", error);
-      alert('Failed to fetch username: ' + error);
-    } finally {
-      setLoading(false);
-    }
+  const fetchUser = async () => {
+    return fetch(`${import.meta.env.VITE_API_URL}/profile/by-id/${user_id}`, { credentials: 'include' })
+      .then(data => data.json())
+      .then(setUser)
+      .finally(() => setLoading(false))
+      .catch(error => {
+        console.error("Error fetching username:", error);
+        alert('Failed to fetch username: ' + error);
+
+      });
   }
 
   useEffect(() => {
-    fetchUserName();
+    fetchUser();
     fetchUserPosts();
   }, [user_id]);
 
@@ -71,8 +67,8 @@ export default function ProfilePage() {
           <div className="w-24 h-24 bg-indigo-100 rounded-full mx-auto mb-4 flex items-center justify-center text-indigo-600">
             <User size={48} />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">{username ? `@${username}` : 'Loading'}</h2>
-          <p className="text-slate-500 font-medium">Community Member</p>
+          <h2 className="text-2xl font-black text-slate-900">{user?.username ? `@${user.username}` : 'Loading'}</h2>
+          <p className="text-slate-500 font-medium">{user?.points && user.points} Points</p>
         </section>
 
         {/* Answered Questions List */}
