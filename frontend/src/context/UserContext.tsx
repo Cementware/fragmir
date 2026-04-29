@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 interface UserContextType {
   unreadCount: number,
   user: { username: string, ID: string, points: number } | undefined,
-  fetchAll: () => Promise<void>
+  fetchAll: () => Promise<[void, void]>
 }
 
 const UserContext = createContext<UserContextType>({
@@ -37,9 +37,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const fetchAll = async () => {
-    try {
-      await Promise.all([fetchNotifications(), fetchUserData()])
-    } finally { }
+    return Promise.all([fetchNotifications(), fetchUserData()])
   }
 
   useEffect(() => {

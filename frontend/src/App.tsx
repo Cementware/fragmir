@@ -16,8 +16,7 @@ export default function App() {
   useEffect(() => {
     const checkAuth = async () => {
       return fetch(`${import.meta.env.VITE_API_URL}/account/me`, { credentials: 'include' })
-        .then(response => response.json())
-        .then(setUser)
+        .then(async response => setUser(response.ok ? await response.json() : null))
         .catch(error => {
           console.error("Auth check failed", error);
           alert('Failed to authenticate: ' + error);
