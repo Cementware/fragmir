@@ -114,6 +114,7 @@ questionRouter.get('/posts/:id', async (req: Request, res: Response) => {
     FROM question q
     WHERE posted = 1
       AND RECIPIENT_ID = ?
+    ORDER BY created_at DESC
     `, [
       req.params.id,
       req.params.id

@@ -7,6 +7,7 @@ import LocationPage from './pages/LocationPage';
 import NotificationsPage from './pages/NotificationsPage';
 import EventsPage from './pages/EventsPage';
 import ProfilePage from './pages/ProfilePage';
+import { UserProvider } from './context/UserContext';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -52,19 +53,21 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={!user ? <AuthPage onLogin={setUser} /> : <Navigate to="/" />} />
+    <UserProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={!user ? <AuthPage onLogin={setUser} /> : <Navigate to="/" />} />
 
-        {/* All protected routes live inside the Layout */}
-        <Route path="/" element={user ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" />}>
-          <Route index element={<SearchPage />} />
-          <Route path="locations" element={<LocationPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path='locations/:location_id' element={<EventsPage />} />
-          <Route path='profile/:user_id' element={<ProfilePage />} />
-        </Route>
-      </Routes>
-    </Router>
+          {/* All protected routes live inside the Layout */}
+          <Route path="/" element={user ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" />}>
+            <Route index element={<SearchPage />} />
+            <Route path="locations" element={<LocationPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path='locations/:location_id' element={<EventsPage />} />
+            <Route path='profile/:user_id' element={<ProfilePage />} />
+          </Route>
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 }

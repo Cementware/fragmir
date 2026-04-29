@@ -1,55 +1,27 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Bell, BellDot, LogOut, MapPin, Pin, Search, User } from 'lucide-react';
+import { Bell, BellDot, LogOut, MapPin, Search, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useUser } from '../context/UserContext.tsx';
 
 export default function Layout({ onLogout }: { onLogout: () => void }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { unreadCount, user } = useUser();
 
   const isActive = (path: string) => location.pathname === path;
 
-  const [unreadCount, setUnreadCount] = useState(0);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [user, setUser] = useState<{ username: string, ID: string } | null>(null);
 
 
   useEffect(() => {
-    if (!user)
-      fetch(`${import.meta.env.VITE_API_URL}/account/me`, { credentials: 'include' })
-        .then(response => response.json())
-        .then(setUser)
-        .catch(error => {
-          console.error('Failed to fetch username: ', error);
-          alert('Failed to fetch username: ' + error);
-        });
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node))
         setUserMenuOpen(false)
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  })
-
-  useEffect(() => {
-    const checkNotifications = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/question/notifications`, { credentials: 'include' });
-        if (response.ok) {
-          const notifications = await response.json();
-          setUnreadCount(notifications.count);
-        }
-      } catch (error) {
-        console.error('Failed to fetch notifications: ', error);
-        alert('Failed to fetch notifications: ' + error);
-      }
-    };
-
-    checkNotifications();
-
-    const interval = setInterval(checkNotifications, 15000);
-    return () => clearInterval(interval);
-  }, []);
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -81,7 +53,14 @@ export default function Layout({ onLogout }: { onLogout: () => void }) {
             {userMenuOpen && (
               <div className="absolute right-0 top-full pt-2 w-48 animate-in fade-in zoom-in-95 duration-150 shadow-2xl z-50 rounded-2xl">
                 <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden p-1">
-                  <span className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-500 font-bold" onClick={() => { navigate(`/profile/${user && user.ID}`); setUserMenuOpen(!userMenuOpen) }}>{user && user.username}</span>
+                  <span
+                    className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 text-sm text-slate-500 font-bold"
+                    onClick={() => {
+                      navigate(`/profile/${user && user.ID}`);
+                      setUserMenuOpen(!userMenuOpen)
+                    }}>
+                    {user && user.username}
+                  </span>
                   <button
                     onClick={() => {
                       setUserMenuOpen(false);
